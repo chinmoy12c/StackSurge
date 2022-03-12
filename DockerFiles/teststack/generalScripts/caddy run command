@@ -1,0 +1,1 @@
+docker run --detach --restart=always --volume=test-data2:/data --net=test-network --name=test-thunderbird-web1 --env=APP_USERNAME="chinmoy" --env=APP_PASSWORD_HASH="JDJhJDEwJEhBMm5UbGVKejNTd3hFZDZNV2UzQ2VLZFREVWlxL2QwZnZyVmxiWlNIWEdOTGVxL1lVYmdp" --env=ATTACH_TO="test-app1" --publish=8081:8080 thunderbird-caddy
