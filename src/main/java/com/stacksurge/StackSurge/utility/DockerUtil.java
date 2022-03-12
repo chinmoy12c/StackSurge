@@ -5,17 +5,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class DockerUtil {
 
-    class ContainerType {
-        static final String TOMCAT = "tomstack";
-        static final String CODESTACK = "codestack";
-        static final String MERNSTACK = "mernstack";
-    }
+    Map<String, String> containerType = Map.of(
+        "TOM", "tomstack",
+        "CODE", "codestack",
+        "MERN", "mernstack"
+    );
 
     public ResponseBody process(String command) {
         ResponseBody response = new ResponseBody();
@@ -92,22 +94,15 @@ public class DockerUtil {
 
     public ResponseBody resolveContainer(String id) {
         ResponseBody response = new ResponseBody();
-        switch (id) {
-            case "TOM":
-                response.setResponse(ContainerType.TOMCAT);
-                break;
-            case "CODE":
-                response.setResponse(ContainerType.CODESTACK);
-                break;
-            case "MERN":
-                response.setResponse(ContainerType.MERNSTACK);
-                break;
-            default:
-                response.setSuccess(false);
-                response.setError("No matching container!");
-                return response;
+        if (containerType.containsKey(id)) {
+            response.setResponse(containerType.get(id));
+            response.setSuccess(true);
         }
-        response.setSuccess(true);
+        else {
+            response.setError("Invalid container code!");
+            response.setSuccess(false);
+        }
+
         return response;
     }
 }

@@ -67,7 +67,7 @@ public class InstanceController {
         return response;
     }
 
-    @PostMapping("/stopContainer") 
+    @PostMapping("/stopInstance") 
     public ResponseBody stopContainer(
         @RequestParam(defaultValue = "") String containerId,
         @RequestParam(defaultValue = "") String jwt) {
