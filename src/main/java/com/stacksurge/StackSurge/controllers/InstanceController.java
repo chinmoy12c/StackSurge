@@ -1,20 +1,21 @@
 package com.stacksurge.StackSurge.controllers;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import com.stacksurge.StackSurge.Models.Instance;
+import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.InstanceRepo;
 import com.stacksurge.StackSurge.dao.UserRepo;
 import com.stacksurge.StackSurge.utility.DockerUtil;
 import com.stacksurge.StackSurge.utility.JwtUtils;
-import com.stacksurge.StackSurge.utility.ResponseBody;
 import com.stacksurge.StackSurge.utility.Sanitize;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,12 +31,10 @@ public class InstanceController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostMapping("/launchInstance/{containerId}")
-    public ResponseBody launchContainer(
-        @PathVariable("containerId") String containerId,
-        @RequestParam(defaultValue = "") String jwt) {
+    @PostMapping(path = "/launchInstance/{containerId}", consumes = "application/json")
+    public ResponseBody launchContainer(@PathVariable("containerId") String containerId, @RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
-        jwt = sanitize.makeSafe(jwt.strip());
+        String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
         ResponseBody jwtVerifyReponse = jwtUtils.verifyToken(jwt);
         if (!jwtVerifyReponse.isSuccess())
             return jwtVerifyReponse;
@@ -67,13 +66,11 @@ public class InstanceController {
         return response;
     }
 
-    @PostMapping("/stopInstance") 
-    public ResponseBody stopContainer(
-        @RequestParam(defaultValue = "") String containerId,
-        @RequestParam(defaultValue = "") String jwt) {
+    @PostMapping(path = "/stopInstance", consumes = "application/json") 
+    public ResponseBody stopContainer(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
-        containerId = sanitize.makeSafe(containerId.strip());
-        jwt = sanitize.makeSafe(jwt.strip());
+        String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
+        String containerId = sanitize.makeSafe(request.getOrDefault("containerId", "").strip());
 
         ResponseBody jwtVerifyResponse = jwtUtils.verifyToken(jwt);
         if (!jwtVerifyResponse.isSuccess())

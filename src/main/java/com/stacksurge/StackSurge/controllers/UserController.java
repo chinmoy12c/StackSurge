@@ -1,20 +1,21 @@
 package com.stacksurge.StackSurge.controllers;
 
+import java.util.HashMap;
 import java.util.UUID;
 
+import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.UserRepo;
 import com.stacksurge.StackSurge.utility.Constants;
 import com.stacksurge.StackSurge.utility.DockerUtil;
 import com.stacksurge.StackSurge.utility.JwtUtils;
-import com.stacksurge.StackSurge.utility.ResponseBody;
 import com.stacksurge.StackSurge.utility.Sanitize;
 import com.stacksurge.StackSurge.utility.UserUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,15 +32,12 @@ public class UserController {
     @Autowired
     private UserUtils userUtils;
 
-    @PostMapping(path = "/register")
-    public ResponseBody registerUser(
-        @RequestParam(defaultValue = "") String email,
-        @RequestParam(defaultValue = "") String password,
-        @RequestParam(defaultValue = "") String jwt) {
+    @PostMapping(path = "/processRegister", consumes = "application/json")
+    public ResponseBody registerUser(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
-        email = sanitize.makeSafe(email.strip());
-        password = sanitize.makeSafe(password.strip());
-        jwt = sanitize.makeSafe(jwt.strip());
+        String email = sanitize.makeSafe(request.getOrDefault("email", "").strip());
+        String password = sanitize.makeSafe(request.getOrDefault("password", "").strip());
+        String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
         if (email.length() == 0 || password.length() == 0 || jwt.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
@@ -85,19 +83,17 @@ public class UserController {
         return response;
     }
 
-    @PostMapping(path = "/login")
-    public ResponseBody loginUser(
-        @RequestParam(defaultValue = "") String email,
-        @RequestParam(defaultValue = "") String password) {
+    @PostMapping(path = "/processLogin", consumes = "application/json")
+    public ResponseBody loginUser(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
-        email = sanitize.makeSafe(email.strip());
-        password = sanitize.makeSafe(password.strip());
+        String email = sanitize.makeSafe(request.getOrDefault("email", "").strip());
+        String password = sanitize.makeSafe(request.getOrDefault("password", "").strip());
         if (email.length() == 0 || password.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
             return response;
         }
-        
+
         password = DigestUtils.md5DigestAsHex((password + Constants.HASH_SECRET_KEY).getBytes());
         User loggedUser = userRepo.getByEmailAndPassword(email, password);
         if (loggedUser == null) {
