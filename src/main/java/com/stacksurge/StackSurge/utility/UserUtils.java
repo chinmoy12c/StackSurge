@@ -12,10 +12,10 @@ public class UserUtils {
     UserRepo userRepo;
 
     public boolean isAdmin(String email) {
-        User user = userRepo.getByEmail(email);
-        if (user.getType().equals("admin"))
-            return true;
-        else
+        User user = userRepo.getByEmailAndType(email, "admin");
+        if (user == null)
             return false;
+        else
+            return true;
     }
 }

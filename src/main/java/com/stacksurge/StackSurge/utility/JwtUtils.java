@@ -5,6 +5,7 @@ import java.util.Date;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.stacksurge.StackSurge.Models.ResponseBody;
 
 import org.springframework.stereotype.Component;
 
@@ -24,10 +25,12 @@ public class JwtUtils {
             .build()
             .verify(jwt)
             .getSubject());
+            response.setStatusCode(200);
             response.setSuccess(true);
         }
         catch (JWTVerificationException e) {
             response.setSuccess(false);
+            response.setStatusCode(500);
             response.setError(e.getMessage());
         }
         return response;

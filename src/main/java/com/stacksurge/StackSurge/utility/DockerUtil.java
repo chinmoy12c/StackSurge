@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.Map;
+
+import com.stacksurge.StackSurge.Models.ResponseBody;
 
 import org.springframework.stereotype.Component;
 
@@ -35,14 +36,17 @@ public class DockerUtil {
 
             if (error.length() != 0) {
                 response.setSuccess(false);
+                response.setStatusCode(500);
                 response.setError(error.toString());
             } else {
                 response.setSuccess(true);
+                response.setStatusCode(200);
                 response.setResponse(out.toString());
             }
             return response;
         } catch (IOException e) {
             response.setSuccess(false);
+            response.setStatusCode(500);
             response.setError(e.getMessage());
             e.printStackTrace();
             return response;
@@ -84,9 +88,11 @@ public class DockerUtil {
         ResponseBody response = new ResponseBody();
         try (ServerSocket serverSocket = new ServerSocket(0)) {
             response.setSuccess(true);
+            response.setStatusCode(200);
             response.setResponse(String.valueOf(serverSocket.getLocalPort()));
         } catch (IOException e) {
             response.setSuccess(false);
+            response.setStatusCode(500);
             response.setError(e.getMessage());
         }
         return response;
@@ -96,13 +102,14 @@ public class DockerUtil {
         ResponseBody response = new ResponseBody();
         if (containerType.containsKey(id)) {
             response.setResponse(containerType.get(id));
+            response.setStatusCode(200);
             response.setSuccess(true);
         }
         else {
             response.setError("Invalid container code!");
+            response.setStatusCode(200);
             response.setSuccess(false);
         }
-
         return response;
     }
 }

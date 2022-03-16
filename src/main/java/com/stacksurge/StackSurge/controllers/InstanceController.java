@@ -62,6 +62,7 @@ public class InstanceController {
         instanceRepo.save(createdInstance);
 
         response.setSuccess(true);
+        response.setStatusCode(200);
         response.setResponse("Instance Created!");
         return response;
     }
@@ -79,12 +80,14 @@ public class InstanceController {
         Instance runningInstance = instanceRepo.getByUserAndStackContainerId(loggedUser, containerId);
         if (runningInstance == null) {
             response.setSuccess(false);
+            response.setStatusCode(401);
             response.setError("Invalid container!");
             return response;
         }
         dockerUtil.stopContainer(containerId, runningInstance.getCaddyContainerId());
         instanceRepo.delete(runningInstance);
         response.setSuccess(true);
+        response.setStatusCode(200);
         response.setResponse("Stopped successfully");
 
         return response;

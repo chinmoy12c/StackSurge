@@ -38,9 +38,11 @@ public class UserController {
         String email = sanitize.makeSafe(request.getOrDefault("email", "").strip());
         String password = sanitize.makeSafe(request.getOrDefault("password", "").strip());
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
+        // TODO: send null jwt response as 401
         if (email.length() == 0 || password.length() == 0 || jwt.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
+            response.setStatusCode(200);
             return response;
         }
 
@@ -50,11 +52,13 @@ public class UserController {
         if (!userUtils.isAdmin(jwtVerifyResponse.getResponse())) {
             response.setSuccess(false);
             response.setError("Unauthorized!");
+            response.setStatusCode(401);
             return response;
         }
         User existingUser = userRepo.getByEmail(email);
         if (existingUser != null) {
             response.setSuccess(false);
+            response.setStatusCode(200);
             response.setError("User already exists!");
             return response;
         }
@@ -79,6 +83,7 @@ public class UserController {
 
         String userToken = jwtUtils.createToken(newUser.getEmail());
         response.setSuccess(true);
+        response.setStatusCode(200);
         response.setResponse(userToken);
         return response;
     }
@@ -90,6 +95,7 @@ public class UserController {
         String password = sanitize.makeSafe(request.getOrDefault("password", "").strip());
         if (email.length() == 0 || password.length() == 0) {
             response.setSuccess(false);
+            response.setStatusCode(200);
             response.setError("Missing fields!");
             return response;
         }
@@ -98,12 +104,14 @@ public class UserController {
         User loggedUser = userRepo.getByEmailAndPassword(email, password);
         if (loggedUser == null) {
             response.setSuccess(false);
+            response.setStatusCode(200);
             response.setError("Wrong username or password!");
             return response;
         }
 
         String userToken = jwtUtils.createToken(email);
         response.setSuccess(true);
+        response.setStatusCode(200);
         response.setResponse(userToken);
         return response;
     }
