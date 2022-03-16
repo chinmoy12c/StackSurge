@@ -52,7 +52,7 @@ public class UserController {
         if (!userUtils.isAdmin(jwtVerifyResponse.getResponse())) {
             response.setSuccess(false);
             response.setError("Unauthorized!");
-            response.setStatusCode(401);
+            response.setStatusCode(403);
             return response;
         }
         User existingUser = userRepo.getByEmail(email);

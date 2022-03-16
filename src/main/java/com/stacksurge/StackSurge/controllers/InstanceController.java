@@ -80,7 +80,7 @@ public class InstanceController {
         Instance runningInstance = instanceRepo.getByUserAndStackContainerId(loggedUser, containerId);
         if (runningInstance == null) {
             response.setSuccess(false);
-            response.setStatusCode(401);
+            response.setStatusCode(403);
             response.setError("Invalid container!");
             return response;
         }
