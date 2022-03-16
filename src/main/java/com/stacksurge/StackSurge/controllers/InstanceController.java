@@ -35,6 +35,14 @@ public class InstanceController {
     public ResponseBody launchContainer(@PathVariable("containerId") String containerId, @RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
+        containerId = sanitize.makeSafe(containerId.strip());
+        // TODO: send null jwt response as 401
+        if (containerId.length() == 0 || jwt.length() == 0) {
+            response.setSuccess(false);
+            response.setError("Missing fields!");
+            response.setStatusCode(200);
+            return response;
+        }
         ResponseBody jwtVerifyReponse = jwtUtils.verifyToken(jwt);
         if (!jwtVerifyReponse.isSuccess())
             return jwtVerifyReponse;
@@ -72,7 +80,13 @@ public class InstanceController {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
         String containerId = sanitize.makeSafe(request.getOrDefault("containerId", "").strip());
-
+        // TODO: send null jwt response as 401
+        if (containerId.length() == 0 || jwt.length() == 0) {
+            response.setSuccess(false);
+            response.setError("Missing fields!");
+            response.setStatusCode(200);
+            return response;
+        }
         ResponseBody jwtVerifyResponse = jwtUtils.verifyToken(jwt);
         if (!jwtVerifyResponse.isSuccess())
             return jwtVerifyResponse;
