@@ -30,7 +30,7 @@ public class JwtUtils {
         }
         catch (JWTVerificationException e) {
             response.setSuccess(false);
-            response.setStatusCode(500);
+            response.setStatusCode(401);
             response.setError(e.getMessage());
         }
         return response;
