@@ -1,5 +1,9 @@
 package com.stacksurge.StackSurge.utility;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.UserRepo;
 
@@ -17,5 +21,13 @@ public class UserUtils {
             return false;
         else
             return true;
+    }
+
+    public void setJwtCookie(HttpServletResponse response, ResponseBody loginData) {
+        Cookie authCookie = new Cookie("authToken", loginData.getResponse());
+        // TODO: uncomment these
+        // authCookie.setHttpOnly(true);
+        // authCookie.setSecure(true);
+        response.addCookie(authCookie);
     }
 }
