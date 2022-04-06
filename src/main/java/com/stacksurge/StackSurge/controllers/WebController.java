@@ -2,6 +2,7 @@ package com.stacksurge.StackSurge.controllers;
 
 import java.io.IOException;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,6 +13,7 @@ import com.stacksurge.StackSurge.utility.UserUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
@@ -31,15 +33,40 @@ public class WebController {
     JwtUtils jwtUtils;
 
     @GetMapping("/")
-    public ModelAndView getHome(HttpServletRequest request) {
+    public ModelAndView getHome(@CookieValue(name = "authToken", defaultValue = "") String authToken) {
+        if (authToken.length() == 0) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        if (!jwtUtils.verifyToken(authToken).isSuccess()) {
+            return new ModelAndView("redirect:/logout");
+        }
+
         ModelAndView homeView = new ModelAndView("home");
         return homeView;
     }
 
+    @GetMapping("/errorPage")
+    public ModelAndView showError() {
+        return new ModelAndView("errorPage");
+    }
+
     @GetMapping("/login")
-    public ModelAndView getLogin(HttpServletRequest request) {
+    public ModelAndView getLogin(@CookieValue(name = "authToken", defaultValue = "") String authToken) {
+        if (authToken.length() != 0) {
+            return new ModelAndView("redirect:/");
+        }
         ModelAndView loginView = new ModelAndView("login");
         return loginView;
+    }
+
+    @GetMapping("/logout") 
+    public ModelAndView logout(HttpServletResponse response) {
+        Cookie authToken = new Cookie("authToken", null);
+        //TODO: set http only
+        authToken.setMaxAge(0);
+        response.addCookie(authToken);
+        return new ModelAndView("redirect:/login");
     }
 
     @PostMapping("/initiateLogin")
@@ -55,7 +82,7 @@ public class WebController {
             userUtils.setJwtCookie(response, loginData);
             return new ModelAndView("redirect:/");
         } else {
-            ModelAndView errorPage = new ModelAndView("errorPage");
+            ModelAndView errorPage = new ModelAndView("redirect:/errorPage");
             errorPage.addObject("errorData", loginData);
             return errorPage;
         }
