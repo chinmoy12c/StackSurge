@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -37,9 +38,19 @@ public class WebController {
         if (authToken.length() == 0) {
             return new ModelAndView("redirect:/login");
         }
-
         if (!jwtUtils.verifyToken(authToken).isSuccess()) {
             return new ModelAndView("redirect:/logout");
+        }
+        RestTemplate restTemplate = new RestTemplate();
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("jwt", authToken);
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        String userInstancesUrl = baseUrl + "/getUserInstances";
+        ResponseBody userInstancesResponse = restTemplate.postForObject(userInstancesUrl, requestBody, ResponseBody.class);
+        if (!userInstancesResponse.isSuccess()) {
+            ModelAndView errorPage = new ModelAndView("redirect:/errorPage");
+            errorPage.addObject("errorData", userInstancesResponse);
+            return errorPage;
         }
 
         ModelAndView homeView = new ModelAndView("home");
@@ -86,5 +97,21 @@ public class WebController {
             errorPage.addObject("errorData", loginData);
             return errorPage;
         }
+    }
+
+    @GetMapping("/launchStack")
+    public ModelAndView launchStack(@RequestParam(name = "stack") String containerId, @CookieValue(name = "authToken", defaultValue = "") String authToken) {
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        String launchInstanceUrl = baseUrl + "/launchInstance/" + containerId;
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("jwt", authToken);
+        ResponseBody instanceResponse = new RestTemplate().postForObject(launchInstanceUrl, requestBody, ResponseBody.class);
+        if (!instanceResponse.isSuccess()) {
+            ModelAndView errorPage = new ModelAndView("redirect:/errorPage");
+            System.out.println(instanceResponse.getError());
+            errorPage.addObject("errorData", instanceResponse);
+            return errorPage;
+        }
+        return new ModelAndView("redirect:/");
     }
 }

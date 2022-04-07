@@ -1,5 +1,6 @@
 package com.stacksurge.StackSurge.Models;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
@@ -35,7 +36,7 @@ public class Instance {
 
     @CreationTimestamp
     @NonNull
-    Timestamp creationTimestamp;
+    Timestamp creationTime;
 
     public int getId() {
         return id;
@@ -53,12 +54,12 @@ public class Instance {
         this.caddyContainerId = caddyContainerId;
     }
 
-    public Timestamp getCreationTimestamp() {
-        return creationTimestamp;
+    public Timestamp getCreationTime() {
+        return creationTime;
     }
 
-    public void setCreationTimestamp(Timestamp creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
+    public void setCreationTime(Timestamp creationTime) {
+        this.creationTime = creationTime;
     }
 
     public int getPort() {

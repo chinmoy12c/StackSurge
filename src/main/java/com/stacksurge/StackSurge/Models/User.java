@@ -1,12 +1,10 @@
 package com.stacksurge.StackSurge.Models;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
@@ -36,9 +34,6 @@ public class User {
     @NonNull
     String type;
 
-    @OneToMany(mappedBy = "user")
-    List<Instance> instances;
-
     public String getCaddyPass() {
         return caddyPass;
     }
@@ -61,14 +56,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public List<Instance> getInstances() {
-        return instances;
-    }
-
-    public void setInstances(List<Instance> instances) {
-        this.instances = instances;
     }
 
     public String getPassword() {

@@ -1,6 +1,7 @@
 package com.stacksurge.StackSurge.controllers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import com.stacksurge.StackSurge.Models.Instance;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import net.minidev.json.JSONObject;
 
 @RestController
 public class InstanceController {
@@ -104,6 +107,32 @@ public class InstanceController {
         response.setStatusCode(200);
         response.setResponse("Stopped successfully");
 
+        return response;
+    }
+
+    @PostMapping(path = "/getUserInstances", consumes = "application/json")
+    public ResponseBody getUserInstances(@RequestBody HashMap<String, String> request) {
+        ResponseBody response = new ResponseBody();
+        String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
+        // TODO: send null jwt response as 401
+        if (jwt.length() == 0) {
+            response.setSuccess(false);
+            response.setError("Missing fields!");
+            response.setStatusCode(200);
+            return response;
+        }
+        ResponseBody jwtVerifyResponse = jwtUtils.verifyToken(jwt);
+        // TODO: send this to 401
+        if (!jwtVerifyResponse.isSuccess())
+            return jwtVerifyResponse;
+        User loggedUser = userRepo.getByEmail(jwtVerifyResponse.getResponse());
+        List<Instance> instances = instanceRepo.getByUser(loggedUser);
+        JSONObject instancesObject = new JSONObject();
+        instancesObject.put("instances", instances);
+        response.setStatusCode(200);
+        response.setSuccess(true);
+        response.setResponse(instancesObject.toJSONString());
+        System.out.println(response);
         return response;
     }
 }
