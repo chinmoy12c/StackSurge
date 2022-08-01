@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openbox_menu xmlns="http://openbox.org/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://openbox.org/ file:///usr/share/openbox/menu.xsd">
     <menu id="root-menu" label="Openbox 3">
-        <item label="Taskbar">
-            <action name="Execute">
-                <execute>/usr/bin/tint2</execute>
-            </action>
-        </item>
         <item label="Vscode">
             <action name="Execute">
                 <execute>code --user-data-dir=/home/student/studentData/vscodeData --no-sandbox</execute>
+            </action>
+        </item>
+        <item label="Firefox">
+            <action name="Execute">
+                <execute>/usr/bin/firefox-esr</execute>
             </action>
         </item>
         <item label="Terminal">
@@ -18,7 +18,12 @@
         </item>
         <item label="File Explorer">
             <action name="Execute">
-                <execute>/usr/bin/nautilus /home/student/</execute>
+                <execute>/usr/bin/nautilus</execute>
+            </action>
+        </item>
+        <item label="Text Editor">
+            <action name="Execute">
+                <execute>/usr/bin/gedit</execute>
             </action>
         </item>
     </menu>

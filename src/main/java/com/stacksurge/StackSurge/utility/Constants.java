@@ -4,8 +4,9 @@ import org.springframework.core.io.FileSystemResource;
 
 public class Constants {
     public static final String SCRIPTS_HOME = new FileSystemResource("").getFile().getAbsolutePath();
-    public static final String CADDY_PASS_GEN_CONTAINER = "caddyPassGen";
-    public static final String DOCKER_NETWORK = "mystack";
+    public static final String CADDY_PASS_GEN_CONTAINER = "caddypassgen";
+    public static final String CADDY_CONNECTOR = "caddy";
+    public static final String DOCKER_NETWORK = "stacksurge";
     // TODO: change this
     public static final String HASH_SECRET_KEY = "ZjFlNzQ1ZjA1ODUzZWUzZmY3Y2E3ZTJlODVhMTA3MzE3M2Y0OTc0ZGQ3NmQz";
     // TODO: change this

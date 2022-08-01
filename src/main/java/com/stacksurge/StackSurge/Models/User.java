@@ -22,9 +22,6 @@ public class User {
     String password;
 
     @NonNull
-    String caddyPass;
-
-    @NonNull
     String volume;
 
     @NonNull
@@ -33,14 +30,6 @@ public class User {
 
     @NonNull
     String type;
-
-    public String getCaddyPass() {
-        return caddyPass;
-    }
-
-    public void setCaddyPass(String caddyPass) {
-        this.caddyPass = caddyPass;
-    }
 
     public String getEmail() {
         return email;

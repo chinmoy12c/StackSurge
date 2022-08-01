@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtils {
     public String createToken(String email) {
+        // TODO: add token stealing security
         return JWT.create()
         .withSubject(email)
         .withExpiresAt(new Date(System.currentTimeMillis() + Constants.JWT_EXPIRE_TIME))

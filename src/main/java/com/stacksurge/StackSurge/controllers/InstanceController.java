@@ -57,16 +57,11 @@ public class InstanceController {
         if (!portResponse.isSuccess())
             return portResponse;
         String containerTag = UUID.randomUUID().toString();
-        ResponseBody containerReponse = dockerUtil.runContainer(loggedUser.getVolume(), containerTag, resolveContainerResponse.getResponse());
+        ResponseBody containerReponse = dockerUtil.runContainer(loggedUser.getVolume(), containerTag, loggedUser.getEmail(), loggedUser.getPassword(), portResponse.getResponse(), resolveContainerResponse.getResponse());
         if (!containerReponse.isSuccess())
             return containerReponse;
-        String caddyTag = UUID.randomUUID().toString();
-        ResponseBody caddyLaunchResponse = dockerUtil.runCaddy(loggedUser.getEmail(), loggedUser.getCaddyPass(), loggedUser.getVolume(), portResponse.getResponse(), containerTag, caddyTag);
-        if (!caddyLaunchResponse.isSuccess())
-            return caddyLaunchResponse;
         Instance createdInstance = new Instance();
         createdInstance.setUser(loggedUser);
-        createdInstance.setCaddyContainerId(caddyTag);
         createdInstance.setStackContainerId(containerTag);
         createdInstance.setPort(Integer.parseInt(portResponse.getResponse()));
         createdInstance.setStackName(resolveContainerResponse.getResponse());
@@ -101,7 +96,7 @@ public class InstanceController {
             response.setError("Invalid container!");
             return response;
         }
-        dockerUtil.stopContainer(containerId, runningInstance.getCaddyContainerId());
+        dockerUtil.stopContainer(containerId);
         instanceRepo.delete(runningInstance);
         response.setSuccess(true);
         response.setStatusCode(200);

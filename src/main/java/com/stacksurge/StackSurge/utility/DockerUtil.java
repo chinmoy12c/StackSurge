@@ -10,6 +10,7 @@ import java.util.Map;
 import com.stacksurge.StackSurge.Models.ResponseBody;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.Base64Utils;
 
 @Component
 public class DockerUtil {
@@ -20,7 +21,7 @@ public class DockerUtil {
         "MERN", "mernstack"
     );
 
-    public ResponseBody process(String command) {
+    private ResponseBody process(String command) {
         ResponseBody response = new ResponseBody();
         try {
             Process process = Runtime.getRuntime().exec(command);
@@ -53,24 +54,12 @@ public class DockerUtil {
         }
     }
 
-    public ResponseBody createCaddyHash(String password) {
-        String command = MessageFormat.format("docker exec {0} caddy hash-password -plaintext {1}",
-                Constants.CADDY_PASS_GEN_CONTAINER, password);
-        return process(command);
-    }
-
-    public ResponseBody runContainer(String volume, String containerTag, String containerName) {
+    public ResponseBody runContainer(String volume, String containerTag, String username, String password,
+        String port, String containerName) {
+        String caddyPassword = Base64Utils.encodeToString(password.getBytes());
         String command = MessageFormat.format(
-                "docker run --detach --volume={0}:/home/student/studentData --net={1} --name={2} {3}",
-                volume, Constants.DOCKER_NETWORK, containerTag, containerName);
-        return process(command);
-    }
-
-    public ResponseBody runCaddy(String username, String password, String volume, String port, String attachTo,
-            String name) {
-        String command = MessageFormat.format(
-                "docker run --detach --restart=always --volume={0}:/home/student/studentData --name={1} --net={2} --env=APP_USERNAME={3} --env=APP_PASSWORD_HASH={4} --env=ATTACH_TO={5} --publish={6}:8080 caddy",
-                volume, name, Constants.DOCKER_NETWORK, username, password, attachTo, port);
+                "docker run --detach --volume={0}:/home/student/studentData --net={1} --name={2} --env=CADDY_USERNAME={3} --env=CADDY_PASSWORD={4} --publish={5}:5902 {6}",
+                volume, Constants.DOCKER_NETWORK, containerTag, username, caddyPassword, port, containerName);
         return process(command);
     }
 
@@ -79,8 +68,8 @@ public class DockerUtil {
         return process(command);
     }
 
-    public ResponseBody stopContainer(String instance, String caddy) {
-        String command = MessageFormat.format("docker stop {0} {1}", instance, caddy);
+    public ResponseBody stopContainer(String instance) {
+        String command = MessageFormat.format("docker stop {0}", instance);
         return process(command);
     }
 

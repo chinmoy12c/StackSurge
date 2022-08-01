@@ -1,6 +1,5 @@
 package com.stacksurge.StackSurge.Models;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
@@ -23,9 +22,6 @@ public class Instance {
     User user;
 
     @NonNull
-    String caddyContainerId;
-
-    @NonNull
     String stackContainerId;
 
     @NonNull
@@ -44,14 +40,6 @@ public class Instance {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getCaddyContainerId() {
-        return caddyContainerId;
-    }
-
-    public void setCaddyContainerId(String caddyContainerId) {
-        this.caddyContainerId = caddyContainerId;
     }
 
     public Timestamp getCreationTime() {

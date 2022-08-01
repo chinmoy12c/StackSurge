@@ -6,14 +6,13 @@ import java.util.UUID;
 import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.UserRepo;
-import com.stacksurge.StackSurge.utility.Constants;
 import com.stacksurge.StackSurge.utility.DockerUtil;
 import com.stacksurge.StackSurge.utility.JwtUtils;
 import com.stacksurge.StackSurge.utility.Sanitize;
 import com.stacksurge.StackSurge.utility.UserUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.DigestUtils;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,18 +66,13 @@ public class UserController {
         ResponseBody createVolumeResponse = dockerUtil.createVolume(volume);
         if (!createVolumeResponse.isSuccess())
             return response;
-        ResponseBody caddyHashResponse = dockerUtil.createCaddyHash(password);
-        if (!caddyHashResponse.isSuccess())
-            return caddyHashResponse;
-        String caddyHash = caddyHashResponse.getResponse();
-        password = DigestUtils.md5DigestAsHex((password + Constants.HASH_SECRET_KEY).getBytes());
+        password = BCrypt.hashpw(password, BCrypt.gensalt());
 
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setPassword(password);
         newUser.setVolume(volume);
         newUser.setType("user");
-        newUser.setCaddyPass(caddyHash);
         userRepo.save(newUser);
 
         String userToken = jwtUtils.createToken(newUser.getEmail());
@@ -100,9 +94,8 @@ public class UserController {
             return response;
         }
 
-        password = DigestUtils.md5DigestAsHex((password + Constants.HASH_SECRET_KEY).getBytes());
-        User loggedUser = userRepo.getByEmailAndPassword(email, password);
-        if (loggedUser == null) {
+        User loggedUser = userRepo.getByEmail(email);
+        if (loggedUser == null || BCrypt.checkpw(password, loggedUser.getPassword())) {
             response.setSuccess(false);
             response.setStatusCode(200);
             response.setError("Wrong username or password!");

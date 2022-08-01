@@ -94,6 +94,7 @@ public class WebController {
             return new ModelAndView("redirect:/");
         } else {
             ModelAndView errorPage = new ModelAndView("redirect:/errorPage");
+            System.out.println(loginData);
             errorPage.addObject("errorData", loginData);
             return errorPage;
         }
