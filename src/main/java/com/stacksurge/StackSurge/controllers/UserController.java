@@ -31,6 +31,13 @@ public class UserController {
     @Autowired
     private UserUtils userUtils;
 
+    /// API end point for registering a user.
+    /// Only accessible to admin users.
+    ///
+    /// Required Data:
+    /// email - Email of user being registered
+    /// password - Password of user being registered
+    /// jwt - Auth token of current user 
     @PostMapping(path = "/processRegister", consumes = "application/json")
     public ResponseBody registerUser(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
@@ -82,6 +89,11 @@ public class UserController {
         return response;
     }
 
+    /// Api endpoint to login a user.
+    ///
+    /// Required Data:
+    /// email - Email of user being logged in
+    /// password - Password of user being logged in
     @PostMapping(path = "/processLogin", consumes = "application/json")
     public ResponseBody loginUser(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();

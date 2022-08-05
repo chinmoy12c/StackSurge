@@ -34,6 +34,11 @@ public class InstanceController {
     @Autowired
     JwtUtils jwtUtils;
 
+    /// Api endpoint to launch an instance.
+    ///
+    /// Required Data:
+    /// jwt - Auth token of the current user
+    /// containerId - Path variable containing the id of the instance to be launched.
     @PostMapping(path = "/launchInstance/{containerId}", consumes = "application/json")
     public ResponseBody launchContainer(@PathVariable("containerId") String containerId, @RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
@@ -73,6 +78,11 @@ public class InstanceController {
         return response;
     }
 
+    /// Api endpoint to stop a running instance.
+    ///
+    /// Required Data:
+    /// jwt - Auth token of the current user
+    /// containerId - Unique id of the running container
     @PostMapping(path = "/stopInstance", consumes = "application/json") 
     public ResponseBody stopContainer(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
@@ -105,6 +115,10 @@ public class InstanceController {
         return response;
     }
 
+    /// Api endpoint to get all the instances currently activated by a user.
+    ///
+    /// Required Data:
+    /// jwt - Auth token of the current user
     @PostMapping(path = "/getUserInstances", consumes = "application/json")
     public ResponseBody getUserInstances(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();

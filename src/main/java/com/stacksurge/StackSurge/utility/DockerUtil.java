@@ -21,6 +21,7 @@ public class DockerUtil {
         "MERN", "mernstack"
     );
 
+    /// Processes raw command on the system.
     private ResponseBody process(String command) {
         ResponseBody response = new ResponseBody();
         try {
@@ -54,6 +55,7 @@ public class DockerUtil {
         }
     }
 
+    /// Runs a docker container.
     public ResponseBody runContainer(String volume, String containerTag, String username, String password,
         String port, String containerName) {
         String caddyPassword = Base64Utils.encodeToString(password.getBytes());
@@ -63,16 +65,19 @@ public class DockerUtil {
         return process(command);
     }
 
+    /// Creates initial volume to be used by a user.
     public ResponseBody createVolume(String volume) {
         String command = MessageFormat.format("docker volume create {0}", volume);
         return process(command);
     }
 
+    /// Stops a running container.
     public ResponseBody stopContainer(String instance) {
         String command = MessageFormat.format("docker stop {0}", instance);
         return process(command);
     }
 
+    /// Finds a free port on the system to attach an instance to.
     public ResponseBody getFreePort() {
         ResponseBody response = new ResponseBody();
         try (ServerSocket serverSocket = new ServerSocket(0)) {
@@ -87,6 +92,7 @@ public class DockerUtil {
         return response;
     }
 
+    /// Resolves instance image name from id.
     public ResponseBody resolveContainer(String id) {
         ResponseBody response = new ResponseBody();
         if (containerType.containsKey(id)) {
