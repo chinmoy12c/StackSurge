@@ -71,7 +71,7 @@ public class WebController {
         return loginView;
     }
 
-    @GetMapping("/logout") 
+    @GetMapping("/logout")
     public ModelAndView logout(HttpServletResponse response) {
         Cookie authToken = new Cookie("authToken", null);
         //TODO: set http only

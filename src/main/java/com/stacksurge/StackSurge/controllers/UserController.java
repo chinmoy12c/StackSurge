@@ -37,15 +37,20 @@ public class UserController {
     /// Required Data:
     /// email - Email of user being registered
     /// password - Password of user being registered
-    /// jwt - Auth token of current user 
+    /// jwt - Auth token of current user
     @PostMapping(path = "/processRegister", consumes = "application/json")
     public ResponseBody registerUser(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
         String email = sanitize.makeSafe(request.getOrDefault("email", "").strip());
         String password = sanitize.makeSafe(request.getOrDefault("password", "").strip());
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
-        // TODO: send null jwt response as 401
-        if (email.length() == 0 || password.length() == 0 || jwt.length() == 0) {
+        if (jwt.length() == 0) {
+            response.setSuccess(false);
+            response.setError("Unauthorized!");
+            response.setStatusCode(401);
+            return response;
+        }
+        if (email.length() == 0 || password.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
             response.setStatusCode(200);

@@ -44,8 +44,13 @@ public class InstanceController {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
         containerId = sanitize.makeSafe(containerId.strip());
-        // TODO: send null jwt response as 401
-        if (containerId.length() == 0 || jwt.length() == 0) {
+        if (jwt.length() == 0) {
+            response.setSuccess(false);
+            response.setError("Unauthorized!");
+            response.setStatusCode(401);
+            return response;
+        }
+        if (containerId.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
             response.setStatusCode(200);
@@ -83,13 +88,18 @@ public class InstanceController {
     /// Required Data:
     /// jwt - Auth token of the current user
     /// containerId - Unique id of the running container
-    @PostMapping(path = "/stopInstance", consumes = "application/json") 
+    @PostMapping(path = "/stopInstance", consumes = "application/json")
     public ResponseBody stopContainer(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
         String containerId = sanitize.makeSafe(request.getOrDefault("containerId", "").strip());
-        // TODO: send null jwt response as 401
-        if (containerId.length() == 0 || jwt.length() == 0) {
+        if (jwt.length() == 0) {
+            response.setSuccess(false);
+            response.setError("Unauthorized!");
+            response.setStatusCode(401);
+            return response;
+        }
+        if (containerId.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
             response.setStatusCode(200);
@@ -123,7 +133,6 @@ public class InstanceController {
     public ResponseBody getUserInstances(@RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
-        // TODO: send null jwt response as 401
         if (jwt.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
@@ -131,9 +140,12 @@ public class InstanceController {
             return response;
         }
         ResponseBody jwtVerifyResponse = jwtUtils.verifyToken(jwt);
-        // TODO: send this to 401
-        if (!jwtVerifyResponse.isSuccess())
-            return jwtVerifyResponse;
+        if (!jwtVerifyResponse.isSuccess()) {
+            response.setSuccess(false);
+            response.setError("Unauthorized!");
+            response.setStatusCode(401);
+            return response;
+        }
         User loggedUser = userRepo.getByEmail(jwtVerifyResponse.getResponse());
         List<Instance> instances = instanceRepo.getByUser(loggedUser);
         JSONObject instancesObject = new JSONObject();

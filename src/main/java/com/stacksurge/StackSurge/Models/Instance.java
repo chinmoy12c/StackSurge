@@ -61,7 +61,7 @@ public class Instance {
     public String getStackContainerId() {
         return stackContainerId;
     }
-    
+
     public void setStackContainerId(String stackContainerId) {
         this.stackContainerId = stackContainerId;
     }
