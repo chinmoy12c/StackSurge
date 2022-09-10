@@ -112,7 +112,7 @@ public class UserController {
         }
 
         User loggedUser = userRepo.getByEmail(email);
-        if (loggedUser == null || BCrypt.checkpw(password, loggedUser.getPassword())) {
+        if (loggedUser == null || !BCrypt.checkpw(password, loggedUser.getPassword())) {
             response.setSuccess(false);
             response.setStatusCode(200);
             response.setError("Wrong username or password!");
