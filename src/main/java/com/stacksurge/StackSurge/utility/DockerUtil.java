@@ -5,21 +5,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.text.MessageFormat;
-import java.util.Map;
 
 import com.stacksurge.StackSurge.Models.ResponseBody;
+import com.stacksurge.StackSurge.Models.TechStack;
+import com.stacksurge.StackSurge.dao.TechStackRepo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 
 @Component
 public class DockerUtil {
 
-    Map<String, String> containerType = Map.of(
-        "TOM", "tomstack",
-        "CODE", "codestack",
-        "MERN", "mernstack"
-    );
+    @Autowired
+    private TechStackRepo techStackRepo;
 
     /// Processes raw command on the system.
     private ResponseBody process(String command) {
@@ -93,10 +92,11 @@ public class DockerUtil {
     }
 
     /// Resolves instance image name from id.
-    public ResponseBody resolveContainer(String id) {
+    public ResponseBody resolveContainer(String codename) {
+        TechStack techStack = techStackRepo.getByCodename(codename);
         ResponseBody response = new ResponseBody();
-        if (containerType.containsKey(id)) {
-            response.setResponse(containerType.get(id));
+        if (techStack != null) {
+            response.setResponse(techStack.getName());
             response.setStatusCode(200);
             response.setSuccess(true);
         }
