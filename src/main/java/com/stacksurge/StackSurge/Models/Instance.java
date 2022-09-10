@@ -25,7 +25,8 @@ public class Instance {
     String stackContainerId;
 
     @NonNull
-    String stackName;
+    @ManyToOne
+    TechStack techStack;
 
     @NonNull
     int port;
@@ -66,12 +67,12 @@ public class Instance {
         this.stackContainerId = stackContainerId;
     }
 
-    public String getStackName() {
-        return stackName;
+    public TechStack getTechStack() {
+        return techStack;
     }
 
-    public void setStackName(String stackName) {
-        this.stackName = stackName;
+    public void setTechStack(TechStack techStack) {
+        this.techStack = techStack;
     }
 
     public User getUser() {

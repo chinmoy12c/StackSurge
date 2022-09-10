@@ -8,6 +8,7 @@ import com.stacksurge.StackSurge.Models.Instance;
 import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.InstanceRepo;
+import com.stacksurge.StackSurge.dao.TechStackRepo;
 import com.stacksurge.StackSurge.dao.UserRepo;
 import com.stacksurge.StackSurge.utility.DockerUtil;
 import com.stacksurge.StackSurge.utility.JwtUtils;
@@ -27,6 +28,8 @@ public class InstanceController {
     InstanceRepo instanceRepo;
     @Autowired
     UserRepo userRepo;
+    @Autowired
+    TechStackRepo techStackRepo;
     @Autowired
     Sanitize sanitize;
     @Autowired
@@ -74,7 +77,7 @@ public class InstanceController {
         createdInstance.setUser(loggedUser);
         createdInstance.setStackContainerId(containerTag);
         createdInstance.setPort(Integer.parseInt(portResponse.getResponse()));
-        createdInstance.setStackName(resolveContainerResponse.getResponse());
+        createdInstance.setTechStack(techStackRepo.getByCodename(containerId));
         instanceRepo.save(createdInstance);
 
         response.setSuccess(true);
@@ -147,13 +150,12 @@ public class InstanceController {
             return response;
         }
         User loggedUser = userRepo.getByEmail(jwtVerifyResponse.getResponse());
-        List<Instance> instances = instanceRepo.getByUser(loggedUser);
+        List<Instance> instances = instanceRepo.getUserInstances(loggedUser);
         JSONObject instancesObject = new JSONObject();
         instancesObject.put("instances", instances);
         response.setStatusCode(200);
         response.setSuccess(true);
         response.setResponse(instancesObject.toJSONString());
-        System.out.println(response);
         return response;
     }
 }
