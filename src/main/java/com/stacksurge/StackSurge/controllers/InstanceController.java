@@ -41,19 +41,19 @@ public class InstanceController {
     ///
     /// Required Data:
     /// jwt - Auth token of the current user
-    /// containerId - Path variable containing the id of the instance to be launched.
-    @PostMapping(path = "/launchInstance/{containerId}", consumes = "application/json")
-    public ResponseBody launchContainer(@PathVariable("containerId") String containerId, @RequestBody HashMap<String, String> request) {
+    /// codename - Path variable containing the id of the instance to be launched.
+    @PostMapping(path = "/launchInstance/{codename}", consumes = "application/json")
+    public ResponseBody launchContainer(@PathVariable("codename") String codename, @RequestBody HashMap<String, String> request) {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
-        containerId = sanitize.makeSafe(containerId.strip());
+        codename = sanitize.makeSafe(codename.strip());
         if (jwt.length() == 0) {
             response.setSuccess(false);
             response.setError("Unauthorized!");
             response.setStatusCode(401);
             return response;
         }
-        if (containerId.length() == 0) {
+        if (codename.length() == 0) {
             response.setSuccess(false);
             response.setError("Missing fields!");
             response.setStatusCode(200);
@@ -63,7 +63,7 @@ public class InstanceController {
         if (!jwtVerifyReponse.isSuccess())
             return jwtVerifyReponse;
         User loggedUser = userRepo.getByEmail(jwtVerifyReponse.getResponse());
-        ResponseBody resolveContainerResponse = dockerUtil.resolveContainer(containerId);
+        ResponseBody resolveContainerResponse = dockerUtil.resolveContainer(codename);
         if (!resolveContainerResponse.isSuccess())
             return resolveContainerResponse;
         ResponseBody portResponse = dockerUtil.getFreePort();
@@ -77,7 +77,7 @@ public class InstanceController {
         createdInstance.setUser(loggedUser);
         createdInstance.setStackContainerId(containerTag);
         createdInstance.setPort(Integer.parseInt(portResponse.getResponse()));
-        createdInstance.setTechStack(techStackRepo.getByCodename(containerId));
+        createdInstance.setTechStack(techStackRepo.getByCodename(codename));
         instanceRepo.save(createdInstance);
 
         response.setSuccess(true);
