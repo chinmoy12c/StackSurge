@@ -1,6 +1,6 @@
 package com.stacksurge.StackSurge.Models;
 
-import java.sql.Timestamp;
+import java.sql.Time;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,7 +33,7 @@ public class Instance {
 
     @CreationTimestamp
     @NonNull
-    Timestamp creationTime;
+    Time creationTime;
 
     public int getId() {
         return id;
@@ -43,11 +43,11 @@ public class Instance {
         this.id = id;
     }
 
-    public Timestamp getCreationTime() {
+    public Time getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(Timestamp creationTime) {
+    public void setCreationTime(Time creationTime) {
         this.creationTime = creationTime;
     }
 

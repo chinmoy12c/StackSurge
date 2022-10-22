@@ -12,7 +12,6 @@ import org.springframework.lang.NonNull;
 @Entity
 public class TechStack {
     @Id
-    @NonNull
     @GeneratedValue
     int id;
 
@@ -29,7 +28,6 @@ public class TechStack {
     @NonNull
     ArrayList<String> tags;
 
-    @NonNull
     boolean isPrimary;
 
     @NonNull

@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import com.stacksurge.StackSurge.Models.Instance;
 import com.stacksurge.StackSurge.Models.ResponseBody;
+import com.stacksurge.StackSurge.Models.TechStack;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.InstanceRepo;
 import com.stacksurge.StackSurge.dao.TechStackRepo;
@@ -14,14 +15,17 @@ import com.stacksurge.StackSurge.utility.DockerUtil;
 import com.stacksurge.StackSurge.utility.JwtUtils;
 import com.stacksurge.StackSurge.utility.Sanitize;
 
+import net.minidev.json.JSONArray;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.minidev.json.JSONObject;
 
+@CrossOrigin(maxAge = 3600, origins = "*")
 @RestController
 public class InstanceController {
     @Autowired
@@ -151,11 +155,19 @@ public class InstanceController {
         }
         User loggedUser = userRepo.getByEmail(jwtVerifyResponse.getResponse());
         List<Instance> instances = instanceRepo.getUserInstances(loggedUser);
-        JSONObject instancesObject = new JSONObject();
-        instancesObject.put("instances", instances);
         response.setStatusCode(200);
         response.setSuccess(true);
-        response.setResponse(instancesObject.toJSONString());
+        response.setResponse(instances.toString());
         return response;
+    }
+
+    @PostMapping(path = "/getAvailableStacks", consumes = "application/json")
+    public ResponseBody getAvailableStacks() {
+        ResponseBody responseBody = new ResponseBody();
+        List<TechStack> availableStacks = techStackRepo.getByIsPrimary(true);
+        responseBody.setResponse(JSONArray.toJSONString(availableStacks));
+        responseBody.setStatusCode(200);
+        responseBody.setSuccess(true);
+        return responseBody;
     }
 }

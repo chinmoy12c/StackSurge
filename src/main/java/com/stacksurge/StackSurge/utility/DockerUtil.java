@@ -59,7 +59,7 @@ public class DockerUtil {
         String port, String containerName) {
         String caddyPassword = Base64Utils.encodeToString(password.getBytes());
         String command = MessageFormat.format(
-                "docker run --detach --volume={0}:/home/student/studentData --net={1} --name={2} --env=CADDY_USERNAME={3} --env=CADDY_PASSWORD={4} --publish={5}:5902 {6}",
+                "docker run --detach --volume={0}:/home/student/studentData --net={1} --name={2} --env=CADDY_USERNAME={3} --env=CADDY_PASSWORD={4} --publish={5}:5902 --shm-size=4G {6}",
                 volume, Constants.DOCKER_NETWORK, containerTag, username, caddyPassword, port, containerName);
         return process(command);
     }
