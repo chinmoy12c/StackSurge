@@ -1,6 +1,6 @@
 :5902 {
-    reverse_proxy :5901
-    basicauth /* {
-        {env.CADDY_USERNAME} {env.CADDY_PASSWORD}
-    }
+	reverse_proxy :5901
+	basicauth /* {
+		{env.CADDY_USERNAME} {env.CADDY_PASSWORD}
+	}
 }
