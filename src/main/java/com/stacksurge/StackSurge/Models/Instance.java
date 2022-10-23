@@ -14,7 +14,6 @@ import org.springframework.lang.NonNull;
 public class Instance {
     @Id
     @GeneratedValue
-    @NonNull
     int id;
 
     @NonNull
@@ -28,7 +27,6 @@ public class Instance {
     @ManyToOne
     TechStack techStack;
 
-    @NonNull
     int port;
 
     @CreationTimestamp

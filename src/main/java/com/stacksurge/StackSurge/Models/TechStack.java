@@ -30,9 +30,6 @@ public class TechStack {
 
     boolean isPrimary;
 
-    @NonNull
-    String icon;
-
     public int getId() {
         return id;
     }
@@ -71,13 +68,5 @@ public class TechStack {
 
     public void setTags(ArrayList<String> tags) {
         this.tags = tags;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 }
