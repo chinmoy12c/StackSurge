@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stacksurge.StackSurge.Models.Instance;
 import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.TechStack;
@@ -47,7 +49,7 @@ public class InstanceController {
     /// jwt - Auth token of the current user
     /// codename - Path variable containing the id of the instance to be launched.
     @PostMapping(path = "/launchInstance/{codename}", consumes = "application/json")
-    public ResponseBody launchContainer(@PathVariable("codename") String codename, @RequestBody HashMap<String, String> request) {
+    public ResponseBody launchContainer(@PathVariable("codename") String codename, @RequestBody HashMap<String, String> request) throws JsonProcessingException {
         ResponseBody response = new ResponseBody();
         String jwt = sanitize.makeSafe(request.getOrDefault("jwt", "").strip());
         codename = sanitize.makeSafe(codename.strip());
@@ -83,10 +85,11 @@ public class InstanceController {
         createdInstance.setPort(Integer.parseInt(portResponse.getResponse()));
         createdInstance.setTechStack(techStackRepo.getByCodename(codename));
         instanceRepo.save(createdInstance);
+        createdInstance.setUser(null);
 
         response.setSuccess(true);
         response.setStatusCode(200);
-        response.setResponse("Instance Created!");
+        response.setResponse(new ObjectMapper().writeValueAsString(createdInstance));
         return response;
     }
 
