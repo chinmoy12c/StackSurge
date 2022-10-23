@@ -15,8 +15,10 @@ public interface InstanceRepo extends JpaRepository<Instance, Integer> {
     /// Remove user details to protect user data from client side.
     public default List<Instance> getUserInstances(User user) {
         List<Instance> instances = getByUser(user);
-        for (Instance instance : instances)
+        for (Instance instance : instances) {
             instance.setUser(null);
+            instance.setCreationTimeRep(instance.getCreationTime().toString());
+        }
         return instances;
     }
 }

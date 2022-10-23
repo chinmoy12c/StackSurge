@@ -1,11 +1,12 @@
 package com.stacksurge.StackSurge.Models;
 
-import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
@@ -31,7 +32,10 @@ public class Instance {
 
     @CreationTimestamp
     @NonNull
-    Time creationTime;
+    Timestamp creationTime;
+
+    @Transient
+    String creationTimeRep;
 
     public int getId() {
         return id;
@@ -41,11 +45,11 @@ public class Instance {
         this.id = id;
     }
 
-    public Time getCreationTime() {
+    public Timestamp getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(Time creationTime) {
+    public void setCreationTime(Timestamp creationTime) {
         this.creationTime = creationTime;
     }
 
@@ -79,5 +83,13 @@ public class Instance {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getCreationTimeRep() {
+        return creationTimeRep;
+    }
+
+    public void setCreationTimeRep(String creationTimeRep) {
+        this.creationTimeRep = creationTimeRep;
     }
 }
