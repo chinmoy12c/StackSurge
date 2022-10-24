@@ -1,11 +1,12 @@
 package com.stacksurge.StackSurge.Models;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.springframework.lang.NonNull;
 
@@ -25,10 +26,10 @@ public class TechStack {
     @NonNull
     String description;
 
-    @NonNull
-    ArrayList<String> tags;
-
     boolean isPrimary;
+
+    @Transient
+    List<StackFeature> features;
 
     public int getId() {
         return id;
@@ -62,11 +63,11 @@ public class TechStack {
         this.name = name;
     }
 
-    public ArrayList<String> getTags() {
-        return tags;
+    public List<StackFeature> getFeatures() {
+        return features;
     }
 
-    public void setTags(ArrayList<String> tags) {
-        this.tags = tags;
+    public void setFeatures(List<StackFeature> features) {
+        this.features = features;
     }
 }

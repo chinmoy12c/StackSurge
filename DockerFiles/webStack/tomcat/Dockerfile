@@ -11,7 +11,7 @@ RUN cat /etc/passwd
 RUN apt-get install -y --no-install-recommends mysql-server
 
 # tomat
-RUN wget -O tomcatSetup.zip https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.65/bin/apache-tomcat-9.0.65.zip
+RUN wget -O tomcatSetup.zip https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.68/bin/apache-tomcat-9.0.68.zip
 RUN unzip tomcatSetup.zip
 RUN mv apache* /home/student/tomcat
 RUN rm tomcatSetup.zip

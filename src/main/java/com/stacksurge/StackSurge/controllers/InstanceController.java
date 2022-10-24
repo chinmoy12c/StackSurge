@@ -11,6 +11,7 @@ import com.stacksurge.StackSurge.Models.ResponseBody;
 import com.stacksurge.StackSurge.Models.TechStack;
 import com.stacksurge.StackSurge.Models.User;
 import com.stacksurge.StackSurge.dao.InstanceRepo;
+import com.stacksurge.StackSurge.dao.StackFeatureRepo;
 import com.stacksurge.StackSurge.dao.TechStackRepo;
 import com.stacksurge.StackSurge.dao.UserRepo;
 import com.stacksurge.StackSurge.utility.DockerUtil;
@@ -36,6 +37,8 @@ public class InstanceController {
     UserRepo userRepo;
     @Autowired
     TechStackRepo techStackRepo;
+    @Autowired
+    StackFeatureRepo stackFeatureRepo;
     @Autowired
     Sanitize sanitize;
     @Autowired
@@ -168,6 +171,9 @@ public class InstanceController {
     public ResponseBody getAvailableStacks() {
         ResponseBody responseBody = new ResponseBody();
         List<TechStack> availableStacks = techStackRepo.getByIsPrimary(true);
+        for (TechStack stack : availableStacks) {
+            stack.setFeatures(stackFeatureRepo.getStackFeatures(stack));
+        }
         responseBody.setResponse(JSONArray.toJSONString(availableStacks));
         responseBody.setStatusCode(200);
         responseBody.setSuccess(true);
